@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ product.name }} | Hop & Barley{% endblock %}
+
+{% block content %}
+<main class="page-product">
+  <div class="container">
+    <section class="product-details-section">
+      <div class="product-image-container">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+        {% else %}
+          <img src="{% static 'img/products/placeholder.jpg' %}" alt="{{ product.name }}" class="product-image">
+        {% endif %}
+      </div>
+      <div class="product-info-column">
+        <div class="product-title-price">
+          <h1 class="product-name">{{ product.name }}</h1>
+          <div class="price-section">
+            <span class="price-tag">{{ product.category.name }}</span>
+            <p class="product-price">${{ product.price }}</p>
+          </div>
+        </div>
+
+        <div class="product-description">
+          {{ product.description|linebreaks }}
+        </div>
+
+        <div class="cart-controls">
+          <form method="post" action="{% url 'cart:add' product.id %}" style="display:flex;gap:8px;width:100%;">
+            {% csrf_token %}
+            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}"
+                   class="Input" style="width:80px;height:40px;">
+            <button type="submit" class="button button--primary add-to-cart-button"
+                    style="width:auto;flex:1;"
+                    {% if product.stock == 0 %}disabled{% endif %}>
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span>Add to Cart</span>
+            </button>
+          </form>
+          {% if product.stock == 0 %}
+            <p style="color:#c81e1e;margin-top:8px;">Нет в наличии</p>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion-section">
+      <div class="accordion-item">
+        <div class="accordion-title">
+          <h3>Technical Specifications</h3>
+          <i class="fa-solid fa-chevron-down accordion-icon"></i>
+        </div>
+        <div class="accordion-content">
+          <ul>
+            <li><strong>Category:</strong> {{ product.category.name }}</li>
+            <li><strong>Stock:</strong> {{ product.stock }}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews-section">
+      <h2 class="reviews-title">Latest reviews</h2>
+      <div class="reviews-grid">
+        {% for r in reviews %}
+          <div class="review-card">
+            <div class="review-rating">
+              {% for i in "12345" %}
+                {% if forloop.counter <= r.rating %}
+                  <i class="fa-solid fa-star"></i>
+                {% else %}
+                  <i class="fa-regular fa-star"></i>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="review-body">
+              <h4 class="review-heading">{{ r.user.username }}</h4>
+              <p class="review-text">{{ r.comment }}</p>
+            </div>
+          </div>
+        {% empty %}
+          <p>Пока нет отзывов. Станьте первым!</p>
+        {% endfor %}
+      </div>
+
+      {% if can_review %}
+        <form method="post" action="{% url 'reviews:create' product.slug %}" class="auth-form" style="margin-top:24px;">
+          {% csrf_token %}
+          {{ review_form.as_p }}
+          <button type="submit" class="button button--primary">Оставить отзыв</button>
+        </form>
+      {% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}

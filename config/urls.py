@@ -1,11 +1,22 @@
-"""Корневые URL-маршруты проекта."""
+"""Корневые URL-маршруты проекта. Подключаем по мере готовности приложений."""
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    # Приложения
+    path("", include("products.urls")),
+
+    # Статические информационные страницы
+    path(
+        "guides/",
+        TemplateView.as_view(template_name="static/guides_recipes.html"),
+        name="guides",
+    ),
 ]
 
 if settings.DEBUG:
