@@ -47,8 +47,8 @@
             <a href="#" class="user-icon" aria-label="My Account">
                 <img src="{% static 'img/icons/User_alt.svg' %}" alt="User Account">
             </a>
-            {# TODO: заменить на {% url 'cart:detail' %} после шага 6 #}
-            <a href="#" class="cart-icon" aria-label="Shopping Cart">
+
+            <a href="{% url 'cart:detail' %}" class="cart-icon" aria-label="Shopping Cart">
                 <img src="{% static 'img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
                 {% if cart_total_qty %}<span class="cart-count">{{ cart_total_qty }}</span>{% endif %}
             </a>

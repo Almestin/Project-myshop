@@ -13,6 +13,7 @@
           <img src="{% static 'img/products/placeholder.jpg' %}" alt="{{ product.name }}" class="product-image">
         {% endif %}
       </div>
+
       <div class="product-info-column">
         <div class="product-title-price">
           <h1 class="product-name">{{ product.name }}</h1>
@@ -85,7 +86,8 @@
       </div>
 
       {% if can_review %}
-        <form method="post" action="{% url 'reviews:create' product.slug %}" class="auth-form" style="margin-top:24px;">
+        <form method="post" action="{% url 'reviews:create' product.slug %}"
+              class="auth-form" style="margin-top:24px;">
           {% csrf_token %}
           {{ review_form.as_p }}
           <button type="submit" class="button button--primary">Оставить отзыв</button>
